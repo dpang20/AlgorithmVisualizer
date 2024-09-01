@@ -1,0 +1,56 @@
+/* src/styles/SortingVisualizer.css */
+
+/* Global Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #081f29;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  h1 {
+    text-align: center;
+    color: white;
+  }
+  
+  /* Sorting Visualizer Container */
+  .array-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 20px 0;
+    height: 400px; /* Adjust as needed */
+    width: 80%; /* Adjust as needed */
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Individual Array Bar */
+  .array-bar {
+    display: inline-block;
+    background-color: turquoise;
+    margin: 0 2px;
+    transition: height 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+  
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
