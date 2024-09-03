@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SortingVisualizer from "./components/SortingVisualizer";
 import "./styles/SortingVisualizer.css";
 

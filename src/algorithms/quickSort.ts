@@ -4,79 +4,66 @@ function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function partition(
-    array: ArrayBar[],
-    start: number,
-    end: number,
-    updateArray: (arr: ArrayBar[]) => void
-): Promise<number> {
-    // Unmark all previous pivots
-    for (let i = 0; i < array.length; i++) {
-        array[i].isSelected = false;
-    }
-
-    const pivotValue = array[end].value;
-    let pivotIndex = start;
-
-    // Mark the new pivot (red)
-    array[end].isSelected = true;
-    updateArray([...array]);
-    await sleep(125
-        );
-
-    for (let i = start; i < end; i++) {
-        array[i].isHighlighted = true;
-        updateArray([...array]);
-        await sleep(125
-            );
-
-        if (array[i].value < pivotValue) {
-            [array[i], array[pivotIndex]] = [array[pivotIndex], array[i]];
-            updateArray([...array]);
-            await sleep(125
-                );
-
-            pivotIndex++;
-        }
-
-        array[i].isHighlighted = false;
-        updateArray([...array]);
-        await sleep(125
-            );
-    }
-
-    // Move the pivot to its correct position
-    [array[pivotIndex], array[end]] = [array[end], array[pivotIndex]];
-    array[pivotIndex].isSelected = false;
-    updateArray([...array]);
-    await sleep(125
-        );
-
-    return pivotIndex;
+function medianOfThree(array: ArrayBar[], low: number, high: number): number {
+    const mid = Math.floor((low + high) / 2);
+    if (array[low].value > array[mid].value) [array[low], array[mid]] = [array[mid], array[low]];
+    if (array[low].value > array[high].value) [array[low], array[high]] = [array[high], array[low]];
+    if (array[mid].value > array[high].value) [array[mid], array[high]] = [array[high], array[mid]];
+    return mid;
 }
-
-export async function quickSort(
-    array: ArrayBar[],
-    updateArray: (arr: ArrayBar[]) => void
-) {
-    // 
-    const stack: { start: number, end: number }[] = [];
-    stack.push({ start: 0, end: array.length - 1 });
-
-    while (stack.length > 0) {
-        const { start, end } = stack.pop()!;
-        if (start >= end) continue;
-
-        const pivotIndex = await partition(array, start, end, updateArray);
-
-        stack.push({ start: start, end: pivotIndex - 1 });
-        stack.push({ start: pivotIndex + 1, end: end });
-    }
-
+async function partition(array: ArrayBar[], low: number, high: number, updateArray: (arr: ArrayBar[]) => void): Promise<number> {
     // Reset all highlights and selections
     for (let i = 0; i < array.length; i++) {
         array[i].isSelected = false;
         array[i].isHighlighted = false;
     }
-    updateArray([...array]);  // Update the array to reflect the final state
+
+    const pivotIndex = medianOfThree(array, low, high);
+    const pivotValue = array[pivotIndex].value;
+    [array[pivotIndex], array[high]] = [array[high], array[pivotIndex]]; // Move pivot to end
+    array[high].isSelected = true;  // Highlight pivot as red
+    updateArray([...array]);
+    await sleep(125);
+
+    let i = low;
+    let j = high - 1;
+
+    while (true) {
+        while (i < high && array[i].value < pivotValue) i++;
+        while (j > low && array[j].value > pivotValue) j--;
+
+        if (i >= j) break;
+
+        [array[i], array[j]] = [array[j], array[i]];
+        array[i].isHighlighted = true; // Highlight the selected index
+        array[j].isHighlighted = true;
+        updateArray([...array]);
+        await sleep(125);
+
+        array[i].isHighlighted = false; // Unhighlight after swap
+        array[j].isHighlighted = false;
+        updateArray([...array]);
+        await sleep(125);
+    }
+
+    [array[i], array[high]] = [array[high], array[i]]; // Swap pivot to its correct place
+    array[i].isSelected = false;  // Unhighlight pivot
+    updateArray([...array]);
+    await sleep(125);
+
+    return i;
+}
+
+
+export async function quickSort(array: ArrayBar[], low: number, high: number, updateArray: (arr: ArrayBar[]) => void) {
+    while (low < high) {
+        const pivotIndex = await partition(array, low, high, updateArray);
+        if (pivotIndex - low < high - pivotIndex) {
+            await quickSort(array, low, pivotIndex - 1, updateArray);
+            low = pivotIndex + 1;
+        } else {
+            await quickSort(array, pivotIndex + 1, high, updateArray);
+            high = pivotIndex - 1;
+        }
+    }
 }
