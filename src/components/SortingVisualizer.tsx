@@ -7,7 +7,17 @@ import "../styles/SortingVisualizer.css";
 
 const SortingVisualizer: React.FC = () => {
   // Initialize the state with ArrayBar objects
-  const [array, setArray] = useState<ArrayBar[]>([]);
+  const [array, setArray] = useState<ArrayBar[]>([
+    { value: 50, isHighlighted: false, isSelected: false },
+    { value: 20, isHighlighted: false, isSelected: false },
+    { value: 30, isHighlighted: false, isSelected: false },
+    { value: 120, isHighlighted: false, isSelected: false },
+    { value: 55, isHighlighted: false, isSelected: false },
+    { value: 60, isHighlighted: false, isSelected: false },
+    { value: 90, isHighlighted: false, isSelected: false },
+    { value: 50, isHighlighted: false, isSelected: false },
+    { value: 70, isHighlighted: false, isSelected: false },
+  ]);
 
   // save this array so we can reset it if user wants to
   const [savedArray, setSavedArray] = useState<ArrayBar[]>([]);
@@ -46,17 +56,23 @@ const SortingVisualizer: React.FC = () => {
   };
 
   return (
-    <div>
-      <button onClick={generateArray}>Generate Array</button>
-      <button onClick={resetArray}>Reset</button>
+    <div className="container">
+      <div className="controls">
+        <button onClick={generateArray}>Generate Array</button>
+        <button onClick={resetArray}>Reset</button>
+      </div>
+
       <div className="array-container">
         {array.map((bar, index) => (
           <ArrayBarComponent key={index} bar={bar} />
         ))}
       </div>
-      <button onClick={handleBubbleSort}>Bubble Sort</button>
-      <button onClick={handleQuickSort}>Quick Sort</button>
-      <button onClick={handleMergeSort}>Merge Sort</button>
+
+      <div className="controls">
+        <button onClick={handleBubbleSort}>Bubble Sort</button>
+        <button onClick={handleQuickSort}>Quick Sort</button>
+        <button onClick={handleMergeSort}>Merge Sort</button>
+      </div>
     </div>
   );
 };

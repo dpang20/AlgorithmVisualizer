@@ -29,8 +29,8 @@ async function partition(array: ArrayBar[], low: number, high: number, updateArr
     let j = high - 1;
 
     while (true) {
-        while (i < high && array[i].value < pivotValue) i++;
-        while (j > low && array[j].value > pivotValue) j--;
+        while (i <= j && array[i].value <= pivotValue) i++;  // Handle equal values properly
+        while (i <= j && array[j].value > pivotValue) j--;
 
         if (i >= j) break;
 
@@ -56,6 +56,7 @@ async function partition(array: ArrayBar[], low: number, high: number, updateArr
 
 
 export async function quickSort(array: ArrayBar[], low: number, high: number, updateArray: (arr: ArrayBar[]) => void) {
+    console.log(array)
     while (low < high) {
         const pivotIndex = await partition(array, low, high, updateArray);
         if (pivotIndex - low < high - pivotIndex) {

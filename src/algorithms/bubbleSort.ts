@@ -37,3 +37,4 @@ export const bubbleSort = (array: ArrayBar[], updateArray: (arr: ArrayBar[]) => 
         updateArray([...array]);
     }, delay);
 };
+    
