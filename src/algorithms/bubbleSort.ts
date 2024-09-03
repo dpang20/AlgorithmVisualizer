@@ -1,56 +1,39 @@
-export const bubbleSort = (array: number[], updateArray: (arr: number[]) => void) => {
-    const arrayBars = document.getElementsByClassName("array-bar") as HTMLCollectionOf<HTMLElement>;
+import { ArrayBar } from "../components/ArrayBar";
+
+export const bubbleSort = (array: ArrayBar[], updateArray: (arr: ArrayBar[]) => void) => {
+    const n = array.length;
     let delay = 0;
 
-    for (let i = 0; i < array.length - 1; i++) {
-        for (let j = 0; j < array.length - i - 1; j++) {
-            const index1 = j;
-            const index2 = j + 1;
-
-            // Schedule all operations in one continuous sequence
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            // Highlight bars being compared
             setTimeout(() => {
-                // Highlight the elements being compared
-                highlightComparison(arrayBars, index1, index2);
-
-                setTimeout(() => {
-                    // Swap the elements in the array if needed
-                    if (array[index1] > array[index2]) {
-                        [array[index1], array[index2]] = [array[index2], array[index1]];
-                        swapHeights(arrayBars, index1, index2);
-                        updateArray([...array]);
-                    }
-                    
-                    // Reset the color after comparison
-                    resetComparison(arrayBars, index1, index2);
-                }, 200);
+                array[j].isHighlighted = true;
+                array[j + 1].isHighlighted = true;
+                updateArray([...array]);
             }, delay);
+            delay += 100;
 
-            delay += 300;  // Adjust delay to control animation speed
+            setTimeout(() => {
+                if (array[j].value > array[j + 1].value) {
+                    // Swap values
+                    [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                    updateArray([...array]);
+                }
+            }, delay);
+            delay += 100;
+
+            // Reset highlighting after swap
+            setTimeout(() => {
+                array[j].isHighlighted = false;
+                array[j + 1].isHighlighted = false;
+                updateArray([...array]);
+            }, delay);
+            delay += 100;
         }
     }
 
-    // Ensure final array update after all operations
     setTimeout(() => {
         updateArray([...array]);
-        console.log("Final sorted array:", array);
     }, delay);
 };
-
-// Utility functions remain the same
-function highlightComparison(arrayBars: HTMLCollectionOf<HTMLElement>, index1: number, index2: number): void {
-    arrayBars[index1].style.backgroundColor = "red";
-    arrayBars[index2].style.backgroundColor = "red";
-}
-
-function resetComparison(arrayBars: HTMLCollectionOf<HTMLElement>, index1: number, index2: number): void {
-    arrayBars[index1].style.backgroundColor = "turquoise";
-    arrayBars[index2].style.backgroundColor = "turquoise";
-}
-
-function swapHeights(arrayBars: HTMLCollectionOf<HTMLElement>, index1: number, index2: number): void {
-    const tempHeight = arrayBars[index1].style.height;
-    arrayBars[index1].style.height = arrayBars[index2].style.height;
-    arrayBars[index2].style.height = tempHeight;
-}
-
-export default bubbleSort;
